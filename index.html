@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante Donatello</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('restaurant-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #080808;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        nav {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0 20px;
+        }
+        
+        nav a:hover {
+            background-color: rgba(154, 123, 161, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+        }
+
+        div {
+           background-color: rgb(238, 186, 16); 
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        li {
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+        
+        li:nth-child(odd) {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        button {
+            padding: 5px 10px;
+            background-color: #dc3545; /* Color rojo */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right; /* Alinear el botón a la derecha */
+        }
+        
+        button:hover {
+            background-color: #0a0a09; /* Cambiar el color de fondo al pasar el ratón */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><em> Restaurante Donatello </em></h1>
+</header>
+
+<nav>
+    <a href="#">Inicio</a>
+    <a href="#">Menú</a>
+    <a href="#">Reservas</a>
+</nav>
+
+<h2><em> Realice su reserva aquí </em></h2>
+
+<div>
+    <label for="numero_mesa">Número de Mesa:</label>
+    <input type="text" id="numero_mesa">
+    <label for="nombre_cliente">Nombre del Cliente:</label>
+    <input type="text" id="nombre_cliente">
+    <label for="fecha_reserva">Fecha de Reserva:</label>
+    <input type="date" id="fecha_reserva">
+    <button onclick="reservarMesa()">Reservar Mesa</button>
+</div>
+
+<h2><em> Menú del Restaurante </em></h2>
+<ul id="menu_restaurante">
+    <!--  menú del restaurante  -->
+</ul>
+
+<h3><em> Datos de su reserva: </em></h3>
+<ul id="reservas_mesas">
+    <!--  reservas de mesas  -->
+<h4><button> Imprima su ticket </h4></button>
+    <ul id="reservas_mesas">
+</ul>
+<!--JAVASCRIPT-->
+
+<script> 
+    let mesas_reservadas = {};
+
+    function reservarMesa() {
+        const numeroMesa = document.getElementById("numero_mesa").value;
+        const nombreCliente = document.getElementById("nombre_cliente").value;
+        const fechaReserva = document.getElementById("fecha_reserva").value;
+        
+        if (numeroMesa.trim() === '' || nombreCliente.trim() === '' || fechaReserva.trim() === '') {
+            alert("Por favor, completa todos los campos.");
+            return;
+        }
+
+        if (numeroMesa in mesas_reservadas) {
+            alert(`Lo sentimos, la mesa ${numeroMesa} ya está reservada.`);
+            return;
+        }
+
+        mesas_reservadas[numeroMesa] = {cliente: nombreCliente, fecha: fechaReserva};
+        actualizarReservas();
+    }
+
+    function cancelarReserva(numeroMesa) {
+        if (confirm(`¿Estás seguro de que deseas cancelar la reserva de la mesa ${numeroMesa}?`)) {
+            delete mesas_reservadas[numeroMesa];
+            actualizarReservas();
+        }
+    }
+
+    function actualizarReservas() {
+        const listaReservas = document.getElementById("reservas_mesas");
+        listaReservas.innerHTML = '';
+
+        for (const mesa in mesas_reservadas) {
+            const reserva = document.createElement("li");
+            reserva.textContent = `Mesa ${mesa} reservada para ${mesas_reservadas[mesa].cliente} el ${mesas_reservadas[mesa].fecha}`;
+            
+            const cancelarBoton = document.createElement("button");
+            cancelarBoton.textContent = "Cancelar Reserva";
+            cancelarBoton.onclick = function() { cancelarReserva(mesa); };
+
+            reserva.appendChild(cancelarBoton);
+            listaReservas.appendChild(reserva);
+        }
+    }
+
+    // Mostrar el menú del restaurante
+    const menuRestaurante = document.getElementById("menu_restaurante");
+    const menuItems = {
+        "Pizza napolitana": "Gs 75.000",
+        "Tamaño familiar": "Gs 100.000"
+        
+    };
+
+    for (const item in menuItems) {
+        const menuItem = document.createElement("li");
+        menuItem.textContent = `${item} - ${menuItems[item]}`;
+        menuRestaurante.appendChild(menuItem);
+    }
+</script>
+
+</body>
+</html>
